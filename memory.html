@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>메모리 카드</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 20px;
+      font-family: 'Segoe UI', sans-serif;
+      color: #e0e0e0;
+    }
+
+    .home-link {
+      align-self: flex-start;
+      color: #a0a0c0;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+    .home-link:hover { color: #e94560; }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #e94560;
+      text-shadow: 0 0 20px rgba(233,69,96,0.5);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .stat-bar {
+      display: flex;
+      gap: 28px;
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 8px;
+      padding: 10px 32px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .stat-label { color: #a0a0c0; }
+    .stat-value { color: #e94560; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 8px 22px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #e94560; color: #fff; }
+    .btn-primary:hover { background: #c73652; }
+    .btn-diff {
+      background: #16213e;
+      color: #a0a0c0;
+      border: 2px solid #0f3460;
+    }
+    .btn-diff.active { background: #0f3460; color: #e94560; border-color: #e94560; }
+    .btn-diff:hover  { background: #0f3460; color: #fff; }
+
+    /* Card grid */
+    .grid {
+      display: grid;
+      gap: 10px;
+    }
+    .grid.easy { grid-template-columns: repeat(4, 80px); }
+    .grid.hard { grid-template-columns: repeat(6, 72px); }
+
+    .card {
+      cursor: pointer;
+      perspective: 600px;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.4s;
+    }
+
+    .card.flipped   .card-inner { transform: rotateY(180deg); }
+    .card.matched   .card-inner { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-back {
+      background: #16213e;
+      border: 2px solid #0f3460;
+      font-size: 1.8rem;
+    }
+
+    .card-front {
+      background: #0f3460;
+      border: 2px solid #e94560;
+      font-size: 2rem;
+      transform: rotateY(180deg);
+    }
+
+    .card.matched .card-front {
+      background: #0f3460;
+      border-color: #4ade80;
+      opacity: 0.75;
+    }
+
+    .grid.hard .card-front,
+    .grid.hard .card-back { font-size: 1.5rem; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .overlay.hidden { display: none; }
+
+    .overlay-box {
+      background: #16213e;
+      border: 2px solid #e94560;
+      border-radius: 14px;
+      padding: 44px 64px;
+      text-align: center;
+    }
+    .overlay-title { font-size: 2rem; font-weight: 700; color: #e94560; margin-bottom: 10px; }
+    .overlay-sub   { font-size: 1rem; color: #a0a0c0; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+
+  <a class="home-link" href="index.html">← 홈으로</a>
+  <h1>🃏 메모리 카드</h1>
+
+  <div class="stat-bar">
+    <span><span class="stat-label">시도 </span><span class="stat-value" id="attempts">0</span></span>
+    <span><span class="stat-label">맞춘 쌍 </span><span class="stat-value" id="matched">0</span></span>
+    <span><span class="stat-label">시간 </span><span class="stat-value" id="timer">0</span><span class="stat-label">s</span></span>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-diff active" id="diff-easy" onclick="setDiff('easy')">쉬움 (4×4)</button>
+    <button class="btn btn-diff"        id="diff-hard" onclick="setDiff('hard')">어려움 (6×6)</button>
+    <button class="btn btn-primary" onclick="newGame()">새 게임</button>
+  </div>
+
+  <div class="grid easy" id="grid"></div>
+
+  <div class="overlay hidden" id="overlay">
+    <div class="overlay-box">
+      <div class="overlay-title">🎉 클리어!</div>
+      <div class="overlay-sub" id="overlaySub"></div>
+      <button class="btn btn-primary" onclick="newGame()">다시 시작</button>
+    </div>
+  </div>
+
+  <script>
+    const EMOJIS_EASY = ['🌟','⚡','🎯','🎮','🎸','🎨','🎭','🏆'];
+    const EMOJIS_HARD = ['🌟','⚡','🎯','🎮','🎸','🎨','🎭','🏆',
+                         '🌈','🦋','🐉','🌺','🎲','🎪','🎡','🎃','🎆','🚀'];
+
+    let diff = 'easy';
+    let cards, firstCard, secondCard, lockBoard;
+    let attempts, matchedPairs, totalPairs;
+    let timerInterval, elapsed;
+
+    function setDiff(d) {
+      diff = d;
+      document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
+      document.getElementById('diff-' + d).classList.add('active');
+      const grid = document.getElementById('grid');
+      grid.className = 'grid ' + d;
+      newGame();
+    }
+
+    function newGame() {
+      clearInterval(timerInterval);
+      document.getElementById('overlay').classList.add('hidden');
+
+      const emojis = diff === 'easy' ? EMOJIS_EASY : EMOJIS_HARD;
+      const pairs  = [...emojis, ...emojis];
+      shuffle(pairs);
+
+      attempts = 0; matchedPairs = 0; elapsed = 0;
+      totalPairs = emojis.length;
+      updateStats();
+      firstCard = secondCard = null;
+      lockBoard = false;
+
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+
+      cards = pairs.map((emoji, i) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.emoji = emoji;
+        card.dataset.idx   = i;
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-back">🂠</div>
+            <div class="card-front">${emoji}</div>
+          </div>`;
+        card.addEventListener('click', onCardClick);
+        grid.appendChild(card);
+        return card;
+      });
+
+      timerInterval = setInterval(() => {
+        elapsed++;
+        document.getElementById('timer').textContent = elapsed;
+      }, 1000);
+    }
+
+    function onCardClick() {
+      if (lockBoard || this.classList.contains('flipped') || this.classList.contains('matched')) return;
+
+      this.classList.add('flipped');
+
+      if (!firstCard) {
+        firstCard = this;
+        return;
+      }
+
+      secondCard = this;
+      lockBoard  = true;
+      attempts++;
+      document.getElementById('attempts').textContent = attempts;
+
+      if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+        matchedPairs++;
+        document.getElementById('matched').textContent = matchedPairs;
+        resetTurn();
+
+        if (matchedPairs === totalPairs) {
+          clearInterval(timerInterval);
+          setTimeout(() => {
+            document.getElementById('overlaySub').textContent =
+              `시도: ${attempts}회  |  시간: ${elapsed}초`;
+            document.getElementById('overlay').classList.remove('hidden');
+          }, 500);
+        }
+      } else {
+        setTimeout(() => {
+          firstCard.classList.remove('flipped');
+          secondCard.classList.remove('flipped');
+          resetTurn();
+        }, 900);
+      }
+    }
+
+    function resetTurn() {
+      firstCard = secondCard = null;
+      lockBoard = false;
+    }
+
+    function updateStats() {
+      document.getElementById('attempts').textContent = attempts;
+      document.getElementById('matched').textContent  = matchedPairs;
+      document.getElementById('timer').textContent    = elapsed;
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    newGame();
+  </script>
+
+</body>
+</html>

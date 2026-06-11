@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>미니게임 모음</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: #e0e0e0;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #e94560;
+      text-shadow: 0 0 30px rgba(233,69,96,0.5);
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      color: #a0a0c0;
+      font-size: 1.1rem;
+    }
+
+    .games-grid {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .game-card {
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 14px;
+      padding: 32px 24px 28px;
+      text-align: center;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .game-card:hover {
+      border-color: #e94560;
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(233,69,96,0.2);
+    }
+
+    .game-icon { font-size: 3.2rem; line-height: 1; }
+
+    .game-name {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #e0e0e0;
+    }
+
+    .game-desc {
+      font-size: 0.88rem;
+      color: #a0a0c0;
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .play-btn {
+      margin-top: 8px;
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 32px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .game-card:hover .play-btn { background: #c73652; }
+    .play-btn:active { transform: scale(0.96); }
+
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      border-top: 1px solid #16213e;
+      color: #505070;
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎮 미니게임 모음</h1>
+    <p>5가지 클래식 게임을 즐겨보세요</p>
+  </header>
+
+  <div class="games-grid">
+    <a class="game-card" href="minesweeper.html">
+      <div class="game-icon">💣</div>
+      <div class="game-name">지뢰찾기</div>
+      <div class="game-desc">숨겨진 지뢰를 피해 모든 칸을 열어보세요.<br>초급·중급·고급 3단계 난이도.</div>
+      <button class="play-btn">Play →</button>
+    </a>
+
+    <a class="game-card" href="snake.html">
+      <div class="game-icon">🐍</div>
+      <div class="game-name">뱀 게임</div>
+      <div class="game-desc">먹이를 먹으며 몸을 키워가세요.<br>벽이나 자신에게 닿으면 게임 오버!</div>
+      <button class="play-btn">Play →</button>
+    </a>
+
+    <a class="game-card" href="2048.html">
+      <div class="game-icon">🔢</div>
+      <div class="game-name">2048</div>
+      <div class="game-desc">같은 숫자 타일을 합쳐 2048을 만들어보세요.<br>전략적인 슬라이딩 퍼즐.</div>
+      <button class="play-btn">Play →</button>
+    </a>
+
+    <a class="game-card" href="memory.html">
+      <div class="game-icon">🃏</div>
+      <div class="game-name">메모리 카드</div>
+      <div class="game-desc">카드를 뒤집어 같은 쌍을 찾아보세요.<br>기억력과 집중력을 테스트!</div>
+      <button class="play-btn">Play →</button>
+    </a>
+
+    <a class="game-card" href="tictactoe.html">
+      <div class="game-icon">⭕</div>
+      <div class="game-name">틱택토</div>
+      <div class="game-desc">AI와 3×3 격자 대결! 먼저 3개를 연속으로 놓으면 승리.<br>쉬움·어려움 선택 가능.</div>
+      <button class="play-btn">Play →</button>
+    </a>
+
+    <a class="game-card" href="dresup.html">
+      <div class="game-icon">👗</div>
+      <div class="game-name">인형 옷 입히기</div>
+      <div class="game-desc">헤어·상의·하의·드레스·신발·악세서리를 골라<br>나만의 스타일을 완성해보세요!</div>
+      <button class="play-btn">Play →</button>
+    </a>
+  </div>
+
+  <footer>
+    <p>© 2025 미니게임 모음 &nbsp;·&nbsp; 순수 HTML / CSS / JS</p>
+  </footer>
+
+</body>
+</html>
